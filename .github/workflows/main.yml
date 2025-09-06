@@ -1,4 +1,4 @@
-name: Build ESP32 Sketch
+name: Build Arduino Project (ESP32)
 
 on:
   push:
@@ -10,39 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v2
-        with:
-          version: "1.x"
+    - name: Set up Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      with:
+        version: latest
 
-      - name: Install ESP32 core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
+    - name: Install ESP32 core
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install esp32:esp32
 
-      - name: Install required libraries
-        run: |
-          arduino-cli lib install "AsyncTCP"
-          arduino-cli lib install "ESPAsyncWebServer"
-          arduino-cli lib install "TFT_eSPI"
-          arduino-cli lib install "Adafruit GFX Library"
-          arduino-cli lib install "SuplaDevice"
-          mkdir -p $HOME/Arduino/libraries
-          cd $HOME/Arduino/libraries
-          git clone https://github.com/alanswx/ESPAsyncWiFiManager.git
-          git clone https://github.com/ayushsharma82/AsyncElegantOTA.git
+    - name: Install libraries
+      run: |
+        arduino-cli lib install "AsyncTCP"
+        arduino-cli lib install "ESPAsyncWebServer"
+        arduino-cli lib install "TFT_eSPI"
+        arduino-cli lib install "Adafruit GFX Library"
+        arduino-cli lib install "SuplaDevice"
+        mkdir -p $HOME/Arduino/libraries
+        cd $HOME/Arduino/libraries
+        git clone https://github.com/alanswx/ESPAsyncWiFiManager.git
+        git clone https://github.com/ayushsharma82/ElegantOTA.git
 
-      - name: Compile sketch
-        run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok
-          mkdir -p output
-          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
+    - name: Compile sketch
+      run: |
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok
+        mkdir -p output
+        cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
-      - name: Upload firmware
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: output/
+    - name: Upload firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware
+        path: output/
