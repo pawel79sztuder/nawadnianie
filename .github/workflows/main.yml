@@ -30,6 +30,9 @@ jobs:
           arduino-cli lib install "TFT_eSPI"
           arduino-cli lib install "Adafruit GFX Library"
           arduino-cli lib install "SuplaDevice"
+          mkdir -p $HOME/Arduino/libraries
+          cd $HOME/Arduino/libraries
+          git clone https://github.com/alanswx/ESPAsyncWiFiManager.git
 
       - name: Compile sketch
         run: |
