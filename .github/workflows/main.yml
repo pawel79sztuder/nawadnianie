@@ -1,0 +1,39 @@
+name: Build Arduino Project (ESP32)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      with:
+        version: latest
+
+    - name: Install ESP32 core
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install esp32:esp32
+
+    - name: Install SuplaDevice library
+      run: arduino-cli lib install "SuplaDevice"
+
+    - name: Compile sketch
+      run: |
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 SuplaESP.ino
+        mkdir -p output
+        cp ./build/esp32.esp32.esp32doit-devkit-v1/SuplaESP.ino.bin ./output/
+
+    - name: Upload firmware
+      uses: actions/upload-artifact@v3
+      with:
+        name: firmware
+        path: output/
