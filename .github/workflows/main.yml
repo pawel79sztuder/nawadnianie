@@ -23,11 +23,13 @@ jobs:
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install dependencies
+    - name: Install required libraries
       run: |
         arduino-cli lib install "SuplaDevice"
         arduino-cli lib install "AsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
+        arduino-cli lib install "Adafruit GFX Library"
+        arduino-cli lib install "TFT_eSPI"
 
     - name: Compile sketch
       run: |
