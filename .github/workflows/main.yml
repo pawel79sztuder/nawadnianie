@@ -24,7 +24,7 @@ jobs:
           arduino-cli core install esp32:esp32
 
       - name: Install required libraries
-        run: |
+      - run: |
           arduino-cli lib install "AsyncTCP"
           arduino-cli lib install "ESPAsyncWebServer"
           arduino-cli lib install "TFT_eSPI"
@@ -33,6 +33,7 @@ jobs:
           mkdir -p $HOME/Arduino/libraries
           cd $HOME/Arduino/libraries
           git clone https://github.com/alanswx/ESPAsyncWiFiManager.git
+          git clone https://github.com/ayushsharma82/AsyncElegantOTA.git
 
       - name: Compile sketch
         run: |
