@@ -1,4 +1,4 @@
-name: Build Arduino Project (ESP32)
+name: Build ESP32 Sketch
 
 on:
   push:
@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v2
+        uses: arduino/setup-arduino-cli@v1
         with:
-          version: "1.x"
+          version: latest
 
       - name: Install ESP32 core
         run: |
@@ -24,7 +24,7 @@ jobs:
           arduino-cli core install esp32:esp32
 
       - name: Install required libraries
-      - run: |
+        run: |
           arduino-cli lib install "AsyncTCP"
           arduino-cli lib install "ESPAsyncWebServer"
           arduino-cli lib install "TFT_eSPI"
