@@ -28,9 +28,9 @@ jobs:
 
       - name: Compile sketch
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 SuplaESP.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok.ino
           mkdir -p output
-          cp ./build/esp32.esp32.esp32doit-devkit-v1/SuplaESP.ino.bin ./output/
+          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
