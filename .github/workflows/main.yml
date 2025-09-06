@@ -14,9 +14,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Arduino CLI
-      uses: arduino/setup-arduino-cli@v2
+      uses: arduino/setup-arduino-cli@v1
       with:
-        cli-version: latest
+        version: latest
 
     - name: Install ESP32 core
       run: |
@@ -28,7 +28,7 @@ jobs:
 
     - name: Compile sketch
       run: |
-        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok.ino
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok
         mkdir -p output
         cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
