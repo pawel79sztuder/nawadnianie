@@ -33,6 +33,10 @@ jobs:
         mkdir -p esp32_lcd_g4_s2_www_ok/libraries
         git clone --depth 1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
+    - name: List project folder structure
+      run: |
+        ls -R esp32_lcd_g4_s2_www_ok
+
     - name: Compile Arduino sketch
       run: |
-        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok --verbose
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok --verbose --libraries esp32_lcd_g4_s2_www_ok/libraries
