@@ -17,24 +17,24 @@ jobs:
     - name: Setup Arduino CLI
       uses: arduino/setup-arduino-cli@v1
 
-    - name: Update core index and install ESP32 core
+    - name: Install ESP32 core
       run: |
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install required libraries
+    - name: Install libraries from Library Manager
       run: |
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
         arduino-cli lib install "ESPAsyncTCP"
 
-    - name: Clone ESPAsyncWiFiManager library manually
+    - name: Clone ESPAsyncWiFiManager manually
       run: |
         mkdir -p custom-libraries
-        git clone --depth 1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libraries/ESPAsyncWiFiManager
+        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libraries/ESPAsyncWiFiManager
 
-    - name: Compile Arduino sketch
+    - name: Compile sketch
       run: |
         arduino-cli compile \
           --fqbn esp32:esp32:esp32doit-devkit-v1 \
