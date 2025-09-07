@@ -11,20 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Install Arduino CLI
-      run: |
-        curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-        export PATH=$HOME/.arduino15/bin:$PATH
-        arduino-cli version
-
-    - name: Update and install ESP32 core
-      run: |
-        ~/.arduino15/arduino-cli core update-index
-        ~/.arduino15/arduino-cli core install esp32:esp32
-
-    - name: Compile supla-test.ino
-      run: |
-        ~/.arduino15/arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test/supla-test.ino
+      - name: Setup Arduino CLI and compile
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          export PATH="$PATH:$(pwd)/bin"
+          arduino-cli version
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test/supla-test.ino
