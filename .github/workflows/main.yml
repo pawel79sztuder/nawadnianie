@@ -26,7 +26,12 @@ jobs:
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
-        arduino-cli lib install "AsyncElegantOTA"
+        arduino-cli lib install "ESPAsyncTCP"
+
+    - name: Install AsyncElegantOTA library from GitHub
+      run: |
+        git clone https://github.com/ayushsharma82/AsyncElegantOTA.git /tmp/AsyncElegantOTA
+        arduino-cli lib install /tmp/AsyncElegantOTA
 
     - name: Install ESPAsyncWiFiManager library from GitHub
       run: |
