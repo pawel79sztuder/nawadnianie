@@ -22,7 +22,7 @@ jobs:
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install required libraries
+    - name: Install libraries from Library Manager
       run: |
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
