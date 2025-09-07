@@ -31,13 +31,13 @@ jobs:
 
     - name: Clone ESPAsyncWiFiManager manually
       run: |
-        mkdir -p arduino-libs
-        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git arduino-libs/ESPAsyncWiFiManager
+        mkdir -p custom-libs
+        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libs/ESPAsyncWiFiManager
 
     - name: Compile sketch
       run: |
         arduino-cli compile \
           --fqbn esp32:esp32:esp32doit-devkit-v1 \
-          --libraries arduino-libs \
+          --libraries custom-libs \
           esp32_lcd_g4_s2_www_ok \
           --verbose
