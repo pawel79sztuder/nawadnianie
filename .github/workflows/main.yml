@@ -32,12 +32,12 @@ jobs:
         run: |
           git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
-      - name: List sketch libraries content for debugging
-        run: ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+      - name: Check libraries folder content
+        run: ls -lR esp32_lcd_g4_s2_www_ok/libraries/
 
-      - name: Compile sketch
+      - name: Compile sketch (verbose)
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries --verbose esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
           mkdir -p output
           cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
