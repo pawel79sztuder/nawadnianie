@@ -1,6 +1,5 @@
 #include <WiFi.h>
-#include <SuplaDevice.h>
-#include <SuplaSwitch.h>  // DODAJ TEN INCLUDE
+#include <SuplaDevice.h>  // SuplaSwitch jest tu zawarte
 
 // Dane WiFi
 #define WIFI_SSID     "Pawel_LTE"
