@@ -1,4 +1,4 @@
-name: Debug Arduino CLI ESP32
+name: Arduino ESP32 Build
 
 on:
   push:
@@ -7,30 +7,23 @@ on:
   pull_request:
 
 jobs:
-  debug:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Install Arduino CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          echo "$(pwd)/bin" >> $GITHUB_PATH
+    - name: Install Arduino CLI
+      run: |
+        curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+        ./bin/arduino-cli version
 
-      - name: Show Arduino CLI version
-        run: arduino-cli version
+    - name: Configure Arduino CLI
+      run: |
+        ./bin/arduino-cli core update-index
+        ./bin/arduino-cli core install esp32:esp32
 
-      - name: Update core index
-        run: arduino-cli core update-index
-
-      - name: Install ESP32 core
-        run: arduino-cli core install esp32:esp32
-
-      - name: List installed cores
-        run: arduino-cli core list
-
-      - name: List available boards
-        run: arduino-cli board listall
-
+    - name: Compile supla-test sketch
+      run: |
+        ./bin/arduino-cli compile --fqbn esp32:esp32:esp32-devkitlipo supla-test
