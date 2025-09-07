@@ -1,21 +1,22 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
+#include <SuplaSwitch.h>  // DODAJ TEN INCLUDE
 
 // Dane WiFi
-#define WIFI_SSID     "Twoja_Siec_WiFi"
-#define WIFI_PASSWORD "Twoje_Haslo_WiFi"
+#define WIFI_SSID     "Pawel_LTE"
+#define WIFI_PASSWORD "pawel2580s"
 
 // Dane Supla
-#define SUPLA_SERVER  "my.supla.org"   // lub adres Twojego serwera Supla
+#define SUPLA_SERVER  "my.supla.org"
 #define SUPLA_PORT    2015
-#define SUPLA_LOGIN   "twoj_email@example.com"
-#define SUPLA_PASS    "twoje_haslo_supla"
+#define SUPLA_LOGIN   "psztuder223@interia.pl"
+#define SUPLA_PASS    "pawel2580s"
 
 // Przekaźnik podłączony do GPIO 2
 #define RELAY_PIN 2
 
-SuplaDevice device(1);            // ID urządzenia w Supli, możesz zmienić na swoje
-SuplaSwitch relay(1, RELAY_PIN);  // kanał 1, pin 2 (GPIO2)
+SuplaDevice device(1);
+SuplaSwitch relay(1, RELAY_PIN);
 
 void setup() {
   Serial.begin(115200);
