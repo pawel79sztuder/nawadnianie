@@ -1,4 +1,4 @@
-name: ESP32 Build
+name: Build ESP32 Project
 
 on:
   push:
@@ -11,35 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install Arduino CLI
+    - name: Setup Arduino CLI
       uses: arduino/setup-arduino-cli@v1
       with:
-        version: latest
+        version: 0.34.0  # konkretna wersja zamiast 'latest'
 
     - name: Install ESP32 platform
       run: arduino-cli core update-index && arduino-cli core install esp32:esp32@3.3.0
 
-    - name: Clone ESPAsyncWiFiManager library
-      run: |
-        git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+    - name: Compile sketch
+      run: arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 path/to/your_sketch.ino --verbose
 
-    - name: Show ESPAsyncWiFiManager library files (debug)
-      run: |
-        ls -l esp32_lcd_g4_s2_www_ok/libraries/
-        ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
-        ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src || echo "No src folder"
-
-    # Optional: if library files are in 'src', move them up one level to fix Arduino CLI library detection
-    - name: Move source files to library root if needed
-      run: |
-        if [ -d esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src ]; then
-          mv esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src/* esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/
-          rmdir esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src
-        fi
-
-    - name: Compile ESP32 sketch
-      run: |
-        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries --verbose esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+    # Jeśli chcesz dodać upload, możesz też dodać krok:
+    #- name: Upload sketch
+    #  run: arduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32doit-devkit-v1 path/to/your_sketch.ino
