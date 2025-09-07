@@ -3,15 +3,13 @@ name: Build ESP32 Project
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Setup Arduino CLI
@@ -22,22 +20,15 @@ jobs:
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install libraries from Library Manager
+    - name: Install libraries
       run: |
-        arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
-        arduino-cli lib install "ESPAsyncTCP"
+        # ESPAsyncWiFiManager is manually included in lib/
 
-    - name: Clone ESPAsyncWiFiManager manually
-      run: |
-        mkdir -p custom-libs
-        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libs/ESPAsyncWiFiManager
-
-    - name: Compile sketch
+    - name: Compile
       run: |
         arduino-cli compile \
           --fqbn esp32:esp32:esp32doit-devkit-v1 \
-          --libraries custom-libs \
-          esp32_lcd_g4_s2_www_ok \
-          --verbose
+          --libraries lib \
+          esp32_lcd_g4_s2_www_ok
