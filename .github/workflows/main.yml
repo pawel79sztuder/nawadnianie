@@ -1,4 +1,4 @@
-name: Build supla-test with Arduino CLI - Debug FQBN
+name: Debug Arduino CLI ESP32
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
   pull_request:
 
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Install Arduino CLI
@@ -22,19 +22,15 @@ jobs:
       - name: Show Arduino CLI version
         run: arduino-cli version
 
-      - name: Update core index and install ESP32
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
+      - name: Update core index
+        run: arduino-cli core update-index
 
-      - name: Show installed cores
+      - name: Install ESP32 core
+        run: arduino-cli core install esp32:esp32
+
+      - name: List installed cores
         run: arduino-cli core list
 
-      - name: Show available boards
+      - name: List available boards
         run: arduino-cli board listall
 
-      - name: List installed packages folder
-        run: ls -l ~/.arduino15/packages/esp32/hardware/esp32
-
-      - name: Try to compile supla-test with guessed FQBN (will likely fail)
-        run: arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test
