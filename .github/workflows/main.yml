@@ -1,4 +1,4 @@
-name: Arduino CI
+name: Build with Arduino CLI
 
 on:
   push:
@@ -14,11 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Arduino CLI and compile
+      - name: Install Arduino CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          export PATH="$PATH:$(pwd)/bin"
-          arduino-cli version
+          echo "export PATH=$PATH:$(pwd)/bin" >> $GITHUB_ENV
+
+      - name: Verify Arduino CLI version
+        run: arduino-cli version
+
+      - name: Set up Arduino Core for ESP32
+        run: |
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
-          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test/supla-test.ino
+
+      - name: Compile supla-test.ino
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test.ino
