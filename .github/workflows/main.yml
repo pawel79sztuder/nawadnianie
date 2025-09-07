@@ -10,39 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Arduino CLI
-      uses: arduino/setup-arduino-cli@v1
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
 
-    - name: Install ESP32 core
-      run: |
-        arduino-cli core update-index
-        arduino-cli core install esp32:esp32
+      - name: Install ESP32 core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
 
-    - name: Update library index and install libraries
-      run: |
-        arduino-cli lib update-index
-        arduino-cli lib install "AsyncTCP"
-        arduino-cli lib install "ESPAsyncWebServer"
-        arduino-cli lib install "ElegantOTA"
+      - name: Update library index and install libraries
+        run: |
+          arduino-cli lib update-index
+          arduino-cli lib install "AsyncTCP"
+          arduino-cli lib install "ESPAsyncWebServer"
+          arduino-cli lib install "ElegantOTA"
 
-    - name: Download and install ESPAsyncWiFiManager library
-      run: |
-        wget https://github.com/khoih-prog/ESPAsyncWiFiManager/archive/refs/heads/master.zip -O ESPAsyncWiFiManager.zip
-        unzip ESPAsyncWiFiManager.zip
-        mkdir -p ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/
-        cp -r ESPAsyncWiFiManager-master ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/ESPAsyncWiFiManager
+      - name: Download and install ESPAsyncWiFiManager library
+        run: |
+          wget https://github.com/khoih-prog/ESPAsyncWiFiManager/archive/refs/heads/main.zip -O ESPAsyncWiFiManager.zip
+          unzip ESPAsyncWiFiManager.zip
+          mkdir -p ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/
+          cp -r ESPAsyncWiFiManager-main ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/ESPAsyncWiFiManager
 
-    - name: Compile sketch
-      run: |
-        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
-        mkdir -p output
-        cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
+      - name: Compile sketch
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+          mkdir -p output
+          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
-    - name: Upload firmware artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: firmware
-        path: output/
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: output/
