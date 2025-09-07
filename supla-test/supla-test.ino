@@ -1,13 +1,12 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
-#include <SuplaConfigESP.h>     // konfiguracja WiFi i Supla
 
 #define WIFI_SSID     "Pawel_LTE"
 #define WIFI_PASSWORD "pawel2580s"
 
-// GUID musi mieć 12 bajtów (24 znaki hex), AuthKey 8 bajtów (16 znaków hex)
-const char SUPLA_GUID[]    = "000000000000259300000000";  // dopasuj do 24 znaków!
-const char SUPLA_AUTHKEY[] = "d39f0361d39f0361";          // dopasuj do 16 znaków!
+// GUID i AUTHKEY dopasuj do wymogów Supla (najczęściej 24 i 16 znaków HEX)
+const char SUPLA_GUID[]    = "000000000000259300000000"; // przykładowe 24 znaki
+const char SUPLA_AUTHKEY[] = "d39f0361d39f0361";         // przykładowe 16 znaków
 
 #define RELAY_PIN 2
 
@@ -19,14 +18,17 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
-  SuplaConfig.setSSID(WIFI_SSID);
-  SuplaConfig.setPassword(WIFI_PASSWORD);
-  SuplaConfig.setGUID(SUPLA_GUID);
-  SuplaConfig.setAuthKey(SUPLA_AUTHKEY);
-  SuplaConfig.save();
+  // Inicjalizacja SuplaDevice z ustawieniami WiFi i Supla
+  bool started = SuplaDevice.begin(
+    SUPLA_GUID,
+    SUPLA_AUTHKEY,
+    WIFI_SSID,
+    WIFI_PASSWORD,
+    23   // wersja protokołu SUPLA, możesz zostawić 23
+  );
 
-  if (!SuplaDevice.begin()) {
-    Serial.println("SuplaDevice.begin() failed");
+  if (!started) {
+    Serial.println("Failed to start SuplaDevice");
     while (1) delay(1000);
   } else {
     Serial.println("SuplaDevice started");
