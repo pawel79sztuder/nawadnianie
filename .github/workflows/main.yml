@@ -1,50 +1,45 @@
-name: Build Arduino Project (ESP32)
+name: ESP32 Build
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+    - name: Install Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      with:
+        version: latest
 
-      - name: Install ESP32 core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
+    - name: Install ESP32 platform
+      run: arduino-cli core update-index && arduino-cli core install esp32:esp32@3.3.0
 
-      - name: Update library index and install required libraries
-        run: |
-          arduino-cli lib update-index
-          arduino-cli lib install "AsyncTCP"
-          arduino-cli lib install "ESPAsyncWebServer"
-          arduino-cli lib install "ElegantOTA"
+    - name: Clone ESPAsyncWiFiManager library
+      run: |
+        git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
-      - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
-        run: |
-          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsync_WiFiManager
+    - name: Show ESPAsyncWiFiManager library files (debug)
+      run: |
+        ls -l esp32_lcd_g4_s2_www_ok/libraries/
+        ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+        ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src || echo "No src folder"
 
-      - name: Debug libraries folder structure
-        run: |
-          ls -l esp32_lcd_g4_s2_www_ok/libraries/
-          ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsync_WiFiManager
+    # Optional: if library files are in 'src', move them up one level to fix Arduino CLI library detection
+    - name: Move source files to library root if needed
+      run: |
+        if [ -d esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src ]; then
+          mv esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src/* esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/
+          rmdir esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager/src
+        fi
 
-      - name: Compile sketch (verbose)
-        run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries --verbose esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
-          mkdir -p output
-          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
-
-      - name: Upload firmware artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: output/
+    - name: Compile ESP32 sketch
+      run: |
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries --verbose esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
