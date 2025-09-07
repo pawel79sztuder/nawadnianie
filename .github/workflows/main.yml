@@ -21,23 +21,18 @@ jobs:
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install required libraries from Arduino Library Manager
+    - name: Install required libraries
       run: |
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
+        arduino-cli lib install "AsyncElegantOTA"
 
-    - name: Install ESPAsyncWiFiManager from GitHub
+    - name: Install ESPAsyncWiFiManager from GitHub zip
       run: |
-        git clone https://github.com/khoih-prog/ESPAsyncWiFiManager.git /tmp/ESPAsyncWiFiManager
-        arduino-cli lib install /tmp/ESPAsyncWiFiManager
-
-    - name: Install AsyncElegantOTA from GitHub
-      run: |
-        git clone https://github.com/ayushsharma82/AsyncElegantOTA.git /tmp/AsyncElegantOTA
-        mkdir -p /tmp/AsyncElegantOTA_lib
-        cp -r /tmp/AsyncElegantOTA/src /tmp/AsyncElegantOTA_lib/AsyncElegantOTA
-        arduino-cli lib install /tmp/AsyncElegantOTA_lib/AsyncElegantOTA
+        wget -q https://github.com/khoih-prog/ESPAsyncWiFiManager/archive/refs/heads/master.zip -O /tmp/ESPAsyncWiFiManager.zip
+        unzip -q /tmp/ESPAsyncWiFiManager.zip -d /tmp/
+        arduino-cli lib install /tmp/ESPAsyncWiFiManager-master
 
     - name: Compile sketch
       run: |
