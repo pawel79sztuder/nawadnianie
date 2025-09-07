@@ -17,16 +17,16 @@ jobs:
       - name: Install Arduino CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          echo "export PATH=$PATH:$(pwd)/bin" >> $GITHUB_ENV
-
-      - name: Verify Arduino CLI version
-        run: arduino-cli version
+          export PATH="$PATH:$(pwd)/bin"
+          arduino-cli version
 
       - name: Set up Arduino Core for ESP32
         run: |
+          export PATH="$PATH:$(pwd)/bin"
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
 
       - name: Compile supla-test.ino
         run: |
+          export PATH="$PATH:$(pwd)/bin"
           arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test.ino
