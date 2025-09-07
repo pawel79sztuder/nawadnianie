@@ -22,7 +22,7 @@ jobs:
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
 
-    - name: Install libraries from Library Manager
+    - name: Install required libraries
       run: |
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
@@ -31,13 +31,13 @@ jobs:
 
     - name: Clone ESPAsyncWiFiManager manually
       run: |
-        mkdir -p custom-libraries
-        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libraries/ESPAsyncWiFiManager
+        mkdir -p arduino-libs
+        git clone https://github.com/khoih-prog/ESPAsync_WiFiManager.git arduino-libs/ESPAsyncWiFiManager
 
     - name: Compile sketch
       run: |
         arduino-cli compile \
           --fqbn esp32:esp32:esp32doit-devkit-v1 \
-          --libraries custom-libraries \
+          --libraries arduino-libs \
           esp32_lcd_g4_s2_www_ok \
           --verbose
