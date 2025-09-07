@@ -26,12 +26,18 @@ jobs:
       run: |
         arduino-cli lib update-index
         arduino-cli lib install "AsyncTCP"
+        arduino-cli lib install "ESPAsyncTCP"
         arduino-cli lib install "ESPAsyncWebServer"
-        arduino-cli lib install https://github.com/khoih-prog/ESPAsync_WiFiManager
+
+    - name: Clone ESPAsync_WiFiManager into custom lib folder
+      run: |
+        mkdir -p custom-libraries
+        git clone --depth 1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git custom-libraries/ESPAsync_WiFiManager
 
     - name: Compile Arduino sketch
       run: |
         arduino-cli compile \
           --fqbn esp32:esp32:esp32doit-devkit-v1 \
+          --libraries custom-libraries \
           esp32_lcd_g4_s2_www_ok \
           --verbose
