@@ -30,10 +30,10 @@ jobs:
 
       - name: Download and install ESPAsyncWiFiManager library
         run: |
-          wget https://github.com/khoih-prog/ESPAsyncWiFiManager/archive/refs/heads/main.zip -O ESPAsyncWiFiManager.zip
+          wget https://github.com/khoih-prog/ESPAsync_WiFiManager/archive/refs/tags/v1.15.1.zip -O ESPAsyncWiFiManager.zip
           unzip ESPAsyncWiFiManager.zip
           mkdir -p ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/
-          cp -r ESPAsyncWiFiManager-main ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/ESPAsyncWiFiManager
+          cp -r ESPAsync_WiFiManager-1.15.1 ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/ESPAsyncWiFiManager
 
       - name: Compile sketch
         run: |
