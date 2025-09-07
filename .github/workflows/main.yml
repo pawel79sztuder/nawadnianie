@@ -1,49 +1,38 @@
-name: Build Arduino Project (ESP32)
+name: Build ESP32 Project
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+    - name: Setup Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
 
-      - name: Install ESP32 core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
+    - name: Update core index and install ESP32 core
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install esp32:esp32
 
-      - name: Update library index and install required libraries
-        run: |
-          arduino-cli lib update-index
-          arduino-cli lib install "AsyncTCP"
-          arduino-cli lib install "ESPAsyncWebServer"
-          arduino-cli lib install "ElegantOTA"
+    - name: Install required libraries
+      run: |
+        arduino-cli lib update-index
+        arduino-cli lib install "AsyncTCP"
+        arduino-cli lib install "ESPAsyncWebServer"
 
-      - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries
-          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+    - name: Clone ESPAsyncWiFiManager library into project libraries folder
+      run: |
+        mkdir -p esp32_lcd_g4_s2_www_ok/libraries
+        git clone --depth 1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
-      - name: List sketch and libraries content for debugging
-        run: ls -lR $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok
-
-      - name: Compile sketch
-        run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino --verbose
-          mkdir -p output
-          cp $GITHUB_WORKSPACE/build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin output/
-
-      - name: Upload firmware artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: output/
+    - name: Compile Arduino sketch
+      run: |
+        arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok --verbose
