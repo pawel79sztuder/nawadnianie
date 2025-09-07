@@ -1,33 +1,35 @@
-name: Build ESP32
+name: Arduino CI Build
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+    - name: Install Arduino CLI
+      run: |
+        curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+        echo "$HOME/.arduino15/bin" >> $GITHUB_PATH
 
-      - name: Install ESP32 core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
+    - name: Update Arduino CLI core index
+      run: arduino-cli core update-index
 
-      - name: Install dependencies
-        run: |
-          arduino-cli lib install "ESPAsyncWebServer"
-          arduino-cli lib install "AsyncTCP"
-          # ESPAsyncWiFiManager is added manually
+    - name: Install ESP32 core
+      run: arduino-cli core install esp32:esp32
 
-      - name: Compile sketch
-        run: |
-          arduino-cli compile \
-            --fqbn esp32:esp32:esp32dev \
-            --libraries lib \
-            esp32_lcd_g4_s2_www_ok
+    - name: Install libraries
+      run: |
+        arduino-cli lib install "ESPAsyncWebServer"
+        arduino-cli lib install "AsyncTCP"
+        arduino-cli lib install "ESPAsyncWiFiManager"
+
+    - name: Compile sketch
+      run: arduino-cli compile --fqbn esp32:esp32:esp32dev esp32_lcd_g4_s2_www_ok
