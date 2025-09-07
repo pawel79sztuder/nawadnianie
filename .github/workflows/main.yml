@@ -1,30 +1,48 @@
-name: Build ESP32 Project
+name: Build Arduino Project (ESP32)
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Arduino CLI
-      uses: arduino/setup-arduino-cli@v1
-      with:
-        version: 0.34.0  # konkretna wersja zamiast 'latest'
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
 
-    - name: Install ESP32 platform
-      run: arduino-cli core update-index && arduino-cli core install esp32:esp32@3.3.0
+      - name: Install ESP32 core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
 
-    - name: Compile sketch
-      run: arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 path/to/your_sketch.ino --verbose
+      - name: Update library index and install required libraries
+        run: |
+          arduino-cli lib update-index
+          arduino-cli lib install "AsyncTCP"
+          arduino-cli lib install "ESPAsyncWebServer"
+          arduino-cli lib install "ElegantOTA"
 
-    # Jeśli chcesz dodać upload, możesz też dodać krok:
-    #- name: Upload sketch
-    #  run: arduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32doit-devkit-v1 path/to/your_sketch.ino
+      - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
+        run: |
+          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+
+      - name: List sketch libraries content for debugging
+        run: ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+
+      - name: Compile sketch
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+          mkdir -p output
+          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: output/
