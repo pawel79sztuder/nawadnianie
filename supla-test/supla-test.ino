@@ -1,5 +1,6 @@
 #include <WiFi.h>
-#include <SuplaDevice.h>  // SuplaSwitch jest tu zawarte
+#include <SuplaDevice.h>
+#include <SuplaSwitch.h>
 
 // Dane WiFi
 #define WIFI_SSID     "Pawel_LTE"
@@ -14,7 +15,6 @@
 // Przekaźnik podłączony do GPIO 2
 #define RELAY_PIN 2
 
-SuplaDevice device(1);
 SuplaSwitch relay(1, RELAY_PIN);
 
 void setup() {
@@ -24,25 +24,26 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
-  Serial.println("Laczenie z WiFi...");
+  Serial.println("Łączenie z WiFi...");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nWiFi polaczone");
+  Serial.println("\nWiFi połączone");
 
-  device.setServer(SUPLA_SERVER, SUPLA_PORT);
-  device.setLogin(SUPLA_LOGIN);
-  device.setPassword(SUPLA_PASS);
+  // Inicjalizacja Supla
+  SuplaDevice.begin(1);  // ID urządzenia Supla = 1
+  SuplaDevice.setServer(SUPLA_SERVER, SUPLA_PORT);
+  SuplaDevice.setLogin(SUPLA_LOGIN);
+  SuplaDevice.setPassword(SUPLA_PASS);
 
-  device.addChannel(&relay);
+  SuplaDevice.addChannel(&relay);
 
-  device.begin();
   Serial.println("Supla started");
 }
 
 void loop() {
-  device.loop();
+  SuplaDevice.loop();
 }
