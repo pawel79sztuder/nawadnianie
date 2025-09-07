@@ -30,16 +30,17 @@ jobs:
 
       - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
         run: |
-          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+          mkdir -p $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries
+          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
-      - name: List sketch libraries content for debugging
-        run: ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+      - name: List sketch and libraries content for debugging
+        run: ls -lR $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok
 
       - name: Compile sketch
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries esp32_lcd_g4_s2_www_ok/libraries esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino --verbose
           mkdir -p output
-          cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
+          cp $GITHUB_WORKSPACE/build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin output/
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
