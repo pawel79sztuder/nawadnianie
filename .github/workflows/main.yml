@@ -29,4 +29,4 @@ jobs:
       - name: Compile supla-test.ino
         run: |
           export PATH="$PATH:$(pwd)/bin"
-          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32dev ./supla-test.ino
