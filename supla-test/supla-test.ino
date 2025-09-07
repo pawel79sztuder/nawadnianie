@@ -1,20 +1,21 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
+#include <SuplaDeviceChannel.h>  // kanały
 
-// Dane WiFi
 #define WIFI_SSID     "Pawel_LTE"
 #define WIFI_PASSWORD "pawel2580s"
 
-// Twoje dane SUPLA (podaj własne)
-#define SUPLA_GUID    "0000000000002593"  // 16 znaków HEX
-#define SUPLA_AUTHKEY "d39f0361"          // 8 znaków HEX
+#define SUPLA_GUID    "0000000000002593"
+#define SUPLA_AUTHKEY "d39f0361"
 
-// Pin przekaźnika
 #define RELAY_PIN 2
+
+// Tworzymy kanał przekaźnika
+SuplaDeviceChannel relayChannel;
 
 void setup() {
   Serial.begin(115200);
-  
+
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
@@ -26,9 +27,17 @@ void setup() {
   }
   Serial.println("\nWiFi connected!");
 
-  // Inicjalizacja SuplaDevice na globalnym obiekcie SuplaDevice
-  SuplaDevice.begin(SUPLA_GUID, SUPLA_AUTHKEY, WIFI_SSID, WIFI_PASSWORD, SUPLA_CHANNELTYPE_RELAY, RELAY_PIN);
-  Serial.println("SuplaDevice started");
+  // Inicjalizujemy urządzenie Supla (protokół 23 jest standardem)
+  SuplaDevice.begin(SUPLA_GUID, SUPLA_AUTHKEY);
+
+  // Konfigurujemy kanał przekaźnika
+  relayChannel.setType(SUPLA_CHANNELTYPE_RELAY);       // typ kanału relay
+  relayChannel.setPin(RELAY_PIN);                       // podpinamy pin
+  SuplaDevice.addChannel(&relayChannel);                // dodajemy kanał do urządzenia
+
+  // Uruchamiamy SUPLA
+  SuplaDevice.setup();
+  Serial.println("SuplaDevice setup completed");
 }
 
 void loop() {
