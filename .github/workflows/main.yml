@@ -21,23 +21,23 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
 
-      - name: Update library index and install libraries
+      - name: Update library index and install required libraries
         run: |
           arduino-cli lib update-index
           arduino-cli lib install "AsyncTCP"
           arduino-cli lib install "ESPAsyncWebServer"
           arduino-cli lib install "ElegantOTA"
 
-      - name: Download and install ESPAsyncWiFiManager library
+      - name: Download ESPAsyncWiFiManager library and move to local libraries folder
         run: |
           wget https://github.com/khoih-prog/ESPAsync_WiFiManager/archive/refs/tags/v1.15.1.zip -O ESPAsyncWiFiManager.zip
           unzip ESPAsyncWiFiManager.zip
-          mkdir -p ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/
-          cp -r ESPAsync_WiFiManager-1.15.1 ~/.arduino15/packages/esp32/hardware/esp32/3.3.0/libraries/ESPAsyncWiFiManager
+          mkdir -p libraries
+          mv ESPAsync_WiFiManager-1.15.1 libraries/ESPAsyncWiFiManager
 
-      - name: Compile sketch
+      - name: Compile sketch with local libraries
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries ./libraries esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino
           mkdir -p output
           cp ./build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin ./output/
 
