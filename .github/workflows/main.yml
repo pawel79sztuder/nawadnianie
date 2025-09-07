@@ -38,11 +38,7 @@ jobs:
 
       - name: Compile sketch
         run: |
-          arduino-cli compile \
-            --fqbn esp32:esp32:esp32doit-devkit-v1 \
-            --libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries \
-            --build-path $GITHUB_WORKSPACE/build \
-            $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino --verbose
+          arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/esp32_lcd_g4_s2_www_ok.ino --verbose
           mkdir -p output
           cp $GITHUB_WORKSPACE/build/esp32.esp32.esp32doit-devkit-v1/esp32_lcd_g4_s2_www_ok.ino.bin output/
 
