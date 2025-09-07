@@ -24,6 +24,10 @@ jobs:
         ./bin/arduino-cli core update-index
         ./bin/arduino-cli core install esp32:esp32
 
+    - name: Install required libraries
+      run: |
+        ./bin/arduino-cli lib install "SuplaDevice"
+
     - name: Compile supla-test sketch
       run: |
         ./bin/arduino-cli compile --fqbn esp32:esp32:esp32-devkitlipo supla-test
