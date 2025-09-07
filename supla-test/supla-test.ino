@@ -1,17 +1,15 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
-#include <SuplaDeviceESP32.h>  // ważne dla ESP32!
 
 #define WIFI_SSID     "Pawel_LTE"
 #define WIFI_PASSWORD "pawel2580s"
 
 // GUID musi mieć dokładnie 16 znaków (wypełnij zerami z przodu)
-#define SUPLA_GUID    "0000000000002593"  
-#define SUPLA_AUTHKEY "d39f0361"         // 8 znaków
+#define SUPLA_GUID    "0000000000002593"
+#define SUPLA_AUTHKEY "d39f0361"
 
 #define RELAY_PIN 2
 
-// Utwórz obiekt kanału typu przełącznik (relay)
 SuplaSwitch relay(1, RELAY_PIN);
 
 void setup() {
@@ -29,13 +27,12 @@ void setup() {
   }
   Serial.println(" connected");
 
-  // Uruchomienie SuplaDevice z wymaganymi parametrami
   bool started = SuplaDevice.begin(
     SUPLA_GUID,
     SUPLA_AUTHKEY,
     WIFI_SSID,
     WIFI_PASSWORD,
-    23  // protokół SUPLA
+    23  // wersja protokołu SUPLA
   );
 
   if (!started) {
@@ -44,7 +41,6 @@ void setup() {
     Serial.println("SuplaDevice started");
   }
 
-  // Dodanie kanału (przekaźnika)
   SuplaDevice.addChannel(&relay);
 }
 
