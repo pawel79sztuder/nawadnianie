@@ -27,6 +27,12 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
 
+      - name: Show installed cores
+        run: arduino-cli core list
+
+      - name: Show available boards
+        run: arduino-cli board listall
+
       - name: Compile supla-test
-        run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test
+        # Zmień FQBN na podstawie wyświetlonej listy z poprzedniego kroku!
+        run: arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test
