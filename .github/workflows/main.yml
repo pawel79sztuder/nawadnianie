@@ -1,4 +1,4 @@
-name: Arduino CI Build
+name: Arduino CI
 
 on:
   push:
@@ -17,22 +17,14 @@ jobs:
     - name: Install Arduino CLI
       run: |
         curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-        echo "$HOME/bin" >> $GITHUB_PATH
+        export PATH=$HOME/.arduino15/bin:$PATH
+        arduino-cli version
 
-    - name: Check Arduino CLI version
-      run: arduino-cli version
-
-    - name: Update Arduino CLI core index
-      run: arduino-cli core update-index
-
-    - name: Install ESP32 core
-      run: arduino-cli core install esp32:esp32
-
-    - name: Install libraries
+    - name: Update and install ESP32 core
       run: |
-        arduino-cli lib install "ESPAsyncWebServer"
-        arduino-cli lib install "AsyncTCP"
-        arduino-cli lib install "ESPAsyncWiFiManager"
+        ~/.arduino15/arduino-cli core update-index
+        ~/.arduino15/arduino-cli core install esp32:esp32
 
-    - name: Compile sketch
-      run: arduino-cli compile --fqbn esp32:esp32:esp32dev esp32_lcd_g4_s2_www_ok
+    - name: Compile supla-test.ino
+      run: |
+        ~/.arduino15/arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test/supla-test.ino
