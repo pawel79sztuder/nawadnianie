@@ -30,10 +30,12 @@ jobs:
 
       - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
         run: |
-          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsync_WiFiManager
 
-      - name: Check libraries folder content
-        run: ls -lR esp32_lcd_g4_s2_www_ok/libraries/
+      - name: Debug libraries folder structure
+        run: |
+          ls -l esp32_lcd_g4_s2_www_ok/libraries/
+          ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsync_WiFiManager
 
       - name: Compile sketch (verbose)
         run: |
