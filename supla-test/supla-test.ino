@@ -1,42 +1,48 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
 
+// Dane do WiFi
 #define WIFI_SSID     "Pawel_LTE"
 #define WIFI_PASSWORD "pawel2580s"
 
-// GUID i AUTHKEY dopasuj do wymogów Supla (najczęściej 24 i 16 znaków HEX)
-const char SUPLA_GUID[]    = "000000000000259300000000"; // przykładowe 24 znaki
-const char SUPLA_AUTHKEY[] = "d39f0361d39f0361";         // przykładowe 16 znaków
+// Dane Supla - wpisz swoje własne (GUID 16 znaków, AuthKey 8 znaków HEX)
+#define SUPLA_GUID    "0000000000002593"
+#define SUPLA_AUTHKEY "d39f0361"
 
 #define RELAY_PIN 2
 
-SuplaSwitch relay(1, RELAY_PIN);
+// Utwórz kanał urządzenia (np. przekaźnik)
+SuplaDeviceChannel relayChannel;
 
 void setup() {
   Serial.begin(115200);
-
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
-  // Inicjalizacja SuplaDevice z ustawieniami WiFi i Supla
-  bool started = SuplaDevice.begin(
-    SUPLA_GUID,
-    SUPLA_AUTHKEY,
-    WIFI_SSID,
-    WIFI_PASSWORD,
-    23   // wersja protokołu SUPLA, możesz zostawić 23
-  );
-
-  if (!started) {
-    Serial.println("Failed to start SuplaDevice");
-    while (1) delay(1000);
-  } else {
-    Serial.println("SuplaDevice started");
+  // Połącz z WiFi
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
+  Serial.println(" connected");
 
-  SuplaDevice.addChannel(&relay);
+  // Inicjalizacja SuplaDevice
+  Supla.begin(SUPLA_GUID, SUPLA_AUTHKEY);
+
+  // Konfiguracja kanału: przekaźnik, GPIO 2
+  relayChannel.setType(SUPLA_CHANNEL_TYPE_RELAY);
+  relayChannel.setGpio(RELAY_PIN);
+
+  // Dodaj kanał do SuplaDevice
+  Supla.addChannel(&relayChannel);
+
+  // Finalizacja konfiguracji Supla
+  Supla.setup();
 }
 
 void loop() {
-  SuplaDevice.loop();
+  // Musisz wywoływać loop Supla, by działała komunikacja z serwerem
+  Supla.loop();
 }
