@@ -17,21 +17,18 @@ jobs:
     - name: Install Arduino CLI
       run: |
         curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-      # Dodaj folder z arduino-cli do PATH na kolejne kroki
-    - name: Add Arduino CLI to PATH
-      run: echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-    - name: Check Arduino CLI version
-      run: arduino-cli version
+        export PATH=$PATH:$HOME/.arduino15/bin
+        arduino-cli version
 
     - name: Setup Arduino ESP32 platform
       run: |
         arduino-cli core update-index
-        arduino-cli core install esp32:esp32 --version 3.3.0
+        arduino-cli core install esp32:esp32@3.3.0
         arduino-cli core list
 
     - name: Fix ESPAsyncWiFiManager library folder structure
       run: |
+        # Przenieś pliki .h i .cpp do src/ w bibliotekach
         for lib in $GITHUB_WORKSPACE/esp32_lcd_g4_s2_www_ok/libraries/*; do
           if [ -d "$lib" ]; then
             mkdir -p "$lib/src"
