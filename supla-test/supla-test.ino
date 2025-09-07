@@ -1,43 +1,46 @@
 #include <WiFi.h>
 #include <SuplaDevice.h>
-#include <SuplaConfigESP.h>  // Konfiguracja WiFi dla ESP32
+#include <SuplaDeviceESP32.h>   // konieczne dla ESP32
+#include <SuplaConfigESP.h>     // konfiguracja WiFi i Supla
+
+#define WIFI_SSID     "Pawel_LTE"
+#define WIFI_PASSWORD "pawel2580s"
+
+// GUID musi mieć dokładnie 12 bajtów (24 znaki hex), authkey 8 bajtów (16 znaków hex)
+const char SUPLA_GUID[]    = "0000000000002593";  // 12 bajtów w hex (tutaj 16 znaków, dopasuj dokładnie do wymagań Supla!)
+const char SUPLA_AUTHKEY[] = "d39f0361";          // 8 bajtów w hex (tutaj 8 znaków, dopasuj!)
 
 #define RELAY_PIN 2
 
-// Tworzymy kanał przekaźnika o ID 1, podłączony do pinu RELAY_PIN
-SuplaRelay relay(1, RELAY_PIN);
+// Utworzenie obiektu przekaźnika (kanał)
+SuplaSwitch relay(1, RELAY_PIN);
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
 
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
-  // Ustawienie danych WiFi i SUPLA - można ustawić ręcznie lub przez webconfig
-  // Jeśli chcesz ustawić ręcznie, odkomentuj poniższy blok (jednorazowo),
-  // potem wykomentuj i zaprogramuj ponownie, żeby nie nadpisywać configu.
-  /*
-  SuplaConfig.setSSID("Pawel_LTE");
-  SuplaConfig.setPassword("pawel2580s");
-  SuplaConfig.setGUID("0000000000002593");    // 12 znaków HEX
-  SuplaConfig.setAuthKey("d39f0361");         // 8 znaków HEX
+  // Konfiguracja Supla - jeśli nie chcesz ustawiać ręcznie przez webconfig,
+  // możesz zakomentować poniższy blok, jeśli konfiguracja jest już zapisana.
+  SuplaConfig.setSSID(WIFI_SSID);
+  SuplaConfig.setPassword(WIFI_PASSWORD);
+  SuplaConfig.setGUID(SUPLA_GUID);
+  SuplaConfig.setAuthKey(SUPLA_AUTHKEY);
   SuplaConfig.save();
-  */
 
-  // Inicjalizacja SuplaDevice z domyślną wersją protokołu (23)
+  // Uruchomienie SuplaDevice
   if (!SuplaDevice.begin()) {
     Serial.println("SuplaDevice.begin() failed");
-    while(1) { delay(1000); }
+    while (1) delay(1000);
   } else {
     Serial.println("SuplaDevice started");
   }
 
-  // Dodanie kanału przekaźnika do urządzenia Supla
+  // Dodanie kanału przekaźnika
   SuplaDevice.addChannel(&relay);
 }
 
 void loop() {
-  // Obsługa komunikacji z SUPLA, musi być wywoływane w loop()
   SuplaDevice.loop();
 }
