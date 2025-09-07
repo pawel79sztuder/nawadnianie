@@ -1,5 +1,5 @@
 #include <WiFi.h>
-#include <supla/esp32.h>
+#include <SuplaDevice.h>
 
 #define WIFI_SSID     "Pawel_LTE"
 #define WIFI_PASSWORD "pawel2580s"
@@ -9,12 +9,8 @@
 
 #define RELAY_PIN 2
 
-Supla::ESPWifi wifi(WIFI_SSID, WIFI_PASSWORD);
-Supla::ESP32 device(wifi, SUPLA_GUID, SUPLA_AUTHKEY);
-
-void onRelayChanged(bool state) {
-  digitalWrite(RELAY_PIN, state ? HIGH : LOW);
-}
+// Tworzymy kanał przekaźnika (id kanału = 1, steruje pinem RELAY_PIN)
+SuplaSwitch relay(1, RELAY_PIN);
 
 void setup() {
   Serial.begin(115200);
@@ -23,13 +19,16 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, LOW);
 
-  // Dodanie kanału przekaźnika z callbackiem
-  device.addRelay(1, onRelayChanged);
+  // Inicjalizacja SuplaDevice z GUID i authkey
+  SuplaDevice.begin(SUPLA_GUID, SUPLA_AUTHKEY);
 
-  device.begin();
+  // Dodaj kanał przekaźnika
+  SuplaDevice.addChannel(&relay);
+
   Serial.println("SuplaDevice started");
 }
 
 void loop() {
-  device.loop();
+  // Obsługa komunikacji z SUPLA
+  SuplaDevice.loop();
 }
