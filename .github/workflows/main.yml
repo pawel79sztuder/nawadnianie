@@ -28,12 +28,9 @@ jobs:
           arduino-cli lib install "ESPAsyncWebServer"
           arduino-cli lib install "ElegantOTA"
 
-      - name: Download ESPAsyncWiFiManager into sketch libraries folder
+      - name: Clone ESPAsyncWiFiManager library into sketch libraries folder
         run: |
-          wget https://github.com/khoih-prog/ESPAsync_WiFiManager/archive/refs/tags/v1.15.1.zip -O ESPAsyncWiFiManager.zip
-          unzip ESPAsyncWiFiManager.zip
-          mkdir -p esp32_lcd_g4_s2_www_ok/libraries
-          mv ESPAsync_WiFiManager-1.15.1 esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
+          git clone --depth 1 --branch v1.15.1 https://github.com/khoih-prog/ESPAsync_WiFiManager.git esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
 
       - name: List sketch libraries content for debugging
         run: ls -l esp32_lcd_g4_s2_www_ok/libraries/ESPAsyncWiFiManager
