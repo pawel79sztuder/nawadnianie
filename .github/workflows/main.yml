@@ -1,4 +1,4 @@
-name: Build with Arduino CLI
+name: Build supla-test with Arduino CLI
 
 on:
   push:
@@ -17,16 +17,16 @@ jobs:
       - name: Install Arduino CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          export PATH="$PATH:$(pwd)/bin"
-          arduino-cli version
+          echo "$(pwd)/bin" >> $GITHUB_PATH
 
-      - name: Set up Arduino Core for ESP32
+      - name: Show Arduino CLI version
+        run: arduino-cli version
+
+      - name: Install ESP32 core
         run: |
-          export PATH="$PATH:$(pwd)/bin"
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
 
-      - name: Compile supla-test.ino
+      - name: Compile supla-test
         run: |
-          export PATH="$PATH:$(pwd)/bin"
-          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32dev supla-test
